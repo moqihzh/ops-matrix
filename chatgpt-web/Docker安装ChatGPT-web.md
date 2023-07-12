@@ -42,11 +42,11 @@ node -v
 npm -v
 
 ```
-### pnpm
+### pnpm安装
 ```
 npm install pnpm -g
 ```
-## 构建编译chatgpt前端
+## 构建编译chatgpt-web前端
 ```
 cd chatgpt-web
 
