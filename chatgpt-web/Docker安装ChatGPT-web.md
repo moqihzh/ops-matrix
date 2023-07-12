@@ -75,4 +75,4 @@ docker-compose up -d
 ```
 
 ## 访问chatgpt-web
-http://IP:3002
+http://IP
