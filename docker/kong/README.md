@@ -1,9 +1,7 @@
-#kong
-## docker-compose
-<br/>
+# kong
+## docker-compose部署kong
 ### 启动
 ```
-cd kong
 docker-compose up -d
 ```
 
@@ -12,7 +10,12 @@ docker-compose up -d
 docker-compose stop
 ```
 
-## 销毁容器
+## 销毁
 ```
 docker-compose down
+```
+
+## 重启
+```
+docker-compose restart
 ```
