@@ -1,9 +1,15 @@
 # 安装ohmyzsh
-# CentOS
+
 ## 安装zsh
+## CentOS
 ```shell
 yum install zsh
 ```
+## Ubuntu
+```shell
+apt install zsh
+```
+
 
 ## 安装ohmyzsh
 ```shell
