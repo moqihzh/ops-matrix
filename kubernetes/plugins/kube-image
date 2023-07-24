@@ -1,0 +1,3 @@
+#!/bin/bash
+
+kubectl get pods -n fat -o custom-columns='POD_NAME:metadata.name,IMAGES:spec.containers[*].image'
