@@ -1,0 +1,74 @@
+---
+apiVersion: v1
+kind: Service #  在mongo名称空间下创建叫做mongo的Service
+metadata:
+  name: mongo
+  namespace: kube-ops
+  labels:
+    name: mongo
+spec:
+  type: NodePort
+  ports:
+    - port: 27017 # 指定该Service的端口为27017
+      targetPort: 27017 # 指定后端Pod的端口
+  selector:
+    role: mongo
+    #"statefulset.kubernetes.io/pod-name": "mongo-0"   # 选择mongo复制集主节点对外服务，因为mongo只有主节点可以提供写服务(这样配置可能会出现问题，当pod挂了的话就是主了，没法进行写入)
+---
+apiVersion: apps/v1
+kind: StatefulSet # 创建StatefulSet的mongo集群，因为StatefulSet网络存储等固定，所以选择
+metadata:
+  name: mongo # 该StatefulSet的名称为mongo
+  namespace: kube-ops
+spec:
+  serviceName: mongo # mongo这个serviceName指的是前面创建的service负责统一管理这些新创建的pod网络
+  replicas: 1 # 1个Pod
+  selector: # selector用来匹配哪些pod符合该副本数量
+    matchLabels:
+      role: mongo
+      environment: staging
+  template:
+    metadata:
+      labels: # 给创建的Pod打标签
+        role: mongo
+        environment: staging
+        replicaset: MainRepSet
+    spec:
+      nodeSelector:
+        type: infra
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: mongo
+          image: mongo:4.0
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME # 设置用户名
+              value: "root"
+            - name: MONGO_INITDB_ROOT_PASSWORD # 设置密码
+              value: "7iFqIajfY=t*8Mq"
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: mongo-data # 挂载数据卷，名字和下面volumeClaimTemplates的名字一样
+              mountPath: /data/db
+          resources:
+            requests: # 指定容器请求资源
+              cpu: 4 # CPU 资源的限制和请求以 “cpu” 为单位。 在 Kubernetes 中，一个 CPU 等于 1 个物理 CPU 核 或者 1 个虚拟核， 取决于节点是一台物理主机还是运行在某物理主机上的虚拟机。
+              memory: 8Gi # 指定请求的内存
+        - name: mongo-sidecar
+          image: cvallance/mongo-k8s-sidecar
+          env:
+            - name: MONGO_SIDECAR_POD_LABELS # 这应该是一个以逗号分隔的键值列表，与podTemplate标签相同
+              value: "role=mongo,environment=staging"
+            - name: KUBE_NAMESPACE # 查找pod的名称空间。不设置它将在所有名称空间中搜索pod
+              value: "mongo"
+            - name: KUBERNETES_MONGO_SERVICE_NAME # 指向前面创建的一个无头服务(headless service)
+              value: "mongo"
+  volumeClaimTemplates:
+    - metadata:
+        name: mongo-data
+      spec:
+        accessModes: ["ReadWriteOnce"] # 只能单节点读取写入
+        storageClassName: nfs # 提供一个可用的 Storageclass
+        resources:
+          requests:
+            storage: 50Gi
