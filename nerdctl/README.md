@@ -3,14 +3,14 @@
 VERSION="v1.5.0"
 TARGET_PATH="/usr/local/bin/"
 
-# wget -c https://github.com/containerd/nerdctl/releases/download/${VERSION}/nerdctl-${VERSION}-linux-amd64.tar.gz
+wget -c https://github.com/containerd/nerdctl/releases/download/${VERSION}/nerdctl-${VERSION}-linux-amd64.tar.gz
 
-# tar zxvf buildkit-v0.12.1.linux-amd64.tar.gz -C $TARGET_PATH
+tar zxvf buildkit-v0.12.1.linux-amd64.tar.gz -C $TARGET_PATH
 
 ```
 # 验证
 ```shell
-# nerdctl --version
+nerdctl --version
 nerdctl version 1.5.0
 ```
 
@@ -22,11 +22,11 @@ nerdctl version 1.5.0
 VERSION="v0.12.1"
 TARGET_PATH="/usr/local/bin/"
 
-# wget -c https://github.com/moby/buildkit/releases/download/${VERSION}/buildkit-${VERSION}.linux-amd64.tar.gz
+wget -c https://github.com/moby/buildkit/releases/download/${VERSION}/buildkit-${VERSION}.linux-amd64.tar.gz
 
-# tar zxvf buildkit-v0.12.1.linux-amd64.tar.gz -C $TARGET_PATH
+tar zxvf buildkit-v0.12.1.linux-amd64.tar.gz -C $TARGET_PATH
 
-# cat >> buildkit.socket << EOF
+cat >> buildkit.socket << EOF
 [Unit]
 Description=BuildKit
 Documentation=https://github.com/moby/buildkit
@@ -39,7 +39,7 @@ SocketMode=0660
 WantedBy=sockets.target
 EOF
 
-# cat >>  buildkit.service << EOF 
+cat >>  buildkit.service << EOF 
 [Unit]
 Description=BuildKit
 Requires=buildkit.socket
@@ -55,14 +55,12 @@ WantedBy=multi-user.target
 EOF
 
 
-# systemctl enable buildkit.service
+systemctl enable buildkit.service
 Created symlink from /etc/systemd/system/multi-user.target.wants/buildkit.service to /usr/lib/systemd/system/buildkit.service.
 
-# systemctl start buildkit.service
-# systemctl status buildkit.service
-# systemctl enable buildkit.service
-Created symlink from /etc/systemd/system/multi-user.target.wants/buildkit.service to /usr/lib/systemd/system/buildkit.service.
-[root@ecs-344692 data]# systemctl status buildkit.service
+systemctl start buildkit.service
+
+systemctl status buildkit.service
 ● buildkit.service - BuildKit
    Loaded: loaded (/usr/lib/systemd/system/buildkit.service; enabled; vendor preset: disabled)
    Active: active (running) since Sun 2023-08-13 08:59:52 CST; 50min ago
