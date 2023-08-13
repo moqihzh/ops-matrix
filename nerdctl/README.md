@@ -7,10 +7,12 @@ TARGET_PATH="/usr/local/bin/"
 
 # tar zxvf buildkit-v0.12.1.linux-amd64.tar.gz -C $TARGET_PATH
 
+```
+# 验证
+```shell
 # nerdctl --version
 nerdctl version 1.5.0
 ```
-
 
 > 构建容器镜像需安装buildkit工具
 
