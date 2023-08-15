@@ -26,7 +26,7 @@ nerdctl version 1.5.0
 
 # tar zxvf buildkit-v0.12.1.linux-amd64.tar.gz -C $TARGET_PATH
 
-# cat >> buildkit.socket << EOF
+# cat >> buildkit.socket << "EOF"
 [Unit]
 Description=BuildKit
 Documentation=https://github.com/moby/buildkit
@@ -39,7 +39,7 @@ SocketMode=0660
 WantedBy=sockets.target
 EOF
 
-# cat >>  buildkit.service << EOF 
+# cat >>  buildkit.service << "EOF" 
 [Unit]
 Description=BuildKit
 Requires=buildkit.socket
