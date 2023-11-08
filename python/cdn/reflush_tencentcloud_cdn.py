@@ -8,11 +8,13 @@ from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentClo
 from tencentcloud.cdn.v20180606 import cdn_client, models
 
 
-if __name__ == '__main__':
-    domains = sys.argv[1:]
+
+def refresh_tencent_cdn(domains):
     domains = str(domains).replace(',',' ').strip("']").strip("['").split(' ')
     try:
-        cred = credential.Credential("", "")
+        secret_id=""
+        secret_key=""
+        cred = credential.Credential(secret_id, secret_key)
         httpProfile = HttpProfile()
         httpProfile.endpoint = "cdn.tencentcloudapi.com"
 
@@ -27,9 +29,13 @@ if __name__ == '__main__':
         }
         req.from_json_string(json.dumps(params))
 
-        resp = client.PurgePathCache(req)
-        print(resp)
-        print('refresh cdn success')
+        response = client.PurgePathCache(req)
+        return response
 
     except TencentCloudSDKException as err:
         print(err)
+        
+if __name__ == '__main__':
+    domains = sys.argv[1:]
+    response = refresh_tencent_cdn(domains)
+    print("refresh cdn success,task id {}".format(response))
